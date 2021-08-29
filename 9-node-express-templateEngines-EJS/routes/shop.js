@@ -17,11 +17,11 @@ router.get('/', (req, res, next) => {
         prods: products,
         pageTitle: 'Shop',
         path: '/',
-        hasProducts: products.length > 0,
-        productCSS: true,
-        formsCSS: true,
-        activeShop: true,
-        activeAddProduct: false,
+        //hasProducts: products.length > 0,
+        //productCSS: true,
+        //formsCSS: true,
+        //activeShop: true,
+        //activeAddProduct: false,
         //layout:false
     });
 });
