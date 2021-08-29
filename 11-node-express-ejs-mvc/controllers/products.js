@@ -1,4 +1,4 @@
-const products = [];
+const Product = require('../models/product');
 
 exports.getAddProduct = (req, res, next) => {
     console.log('This is my add products middleware!');
@@ -12,15 +12,19 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res, next) => {
     console.log(req.body);
-    products.push({ title: req.body.title });
+    const product = new Product(req.body.title);
+    product.save();
     res.redirect('/');
 }
 
 exports.getProducts = (req, res, next) => {
-    console.log(products);
-    res.render('shop', {
-        prods: products,
-        pageTitle: 'Shop',
-        path: '/'
+    //console.log(products);
+    Product.fetchAll((products) => {
+        res.render('shop', {
+            prods: products,
+            pageTitle: 'Shop',
+            path: '/'
+        });
     });
+   
 }

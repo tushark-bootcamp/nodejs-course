@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js",
+    "__comment": "nodemon -e js app.js => ensures the server does not always restart when a new product is added in data/products.json file",
+    "start": "nodemon -e js app.js",
     "start-server": "node app.js"
   },
   "author": "Tushar Kolwalkar",
