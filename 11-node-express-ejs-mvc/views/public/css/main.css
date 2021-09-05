@@ -18,6 +18,7 @@ main {
 form {
   display: inline;
 }
+
 .main-header {
   width: 100%;
   height: 3.5rem;
@@ -55,6 +56,7 @@ form {
 .main-header__item a.active {
   color: #ffeb3b;
 }
+
 .mobile-nav {
   width: 30rem;
   height: 100vh;
@@ -68,9 +70,11 @@ form {
   transform: translateX(-100%);
   transition: transform 0.3s ease-out;
 }
+
 .mobile-nav.open {
   transform: translateX(0);
 }
+
 .mobile-nav__item-list {
   list-style: none;
   display: flex;
@@ -78,16 +82,19 @@ form {
   margin: 0;
   padding: 0;
 }
+
 .mobile-nav__item {
   margin: 1rem;
   padding: 0;
 }
+
 .mobile-nav__item a {
   text-decoration: none;
   color: black;
   font-size: 1.5rem;
   padding: 0.5rem 2rem;
 }
+
 .mobile-nav__item a:active,
 .mobile-nav__item a:hover,
 .mobile-nav__item a.active {
@@ -95,6 +102,7 @@ form {
   color: white;
   border-radius: 3px;
 }
+
 #side-menu-toggle {
   border: 1px solid white;
   font: inherit;
@@ -104,14 +112,17 @@ form {
   color: white;
   cursor: pointer;
 }
+
 #side-menu-toggle:focus {
   outline: none;
 }
+
 #side-menu-toggle:active,
 #side-menu-toggle:hover {
   color: #ffeb3b;
   border-color: #ffeb3b;
 }
+
 .backdrop {
   position: fixed;
   top: 0;
@@ -155,13 +166,13 @@ form {
 }
 
 .card__actions {
-    padding: 1rem;
-    text-align: center;
+  padding: 1rem;
+  text-align: center;
 }
 
 .card__actions button,
 .card__actions a {
-    margin: 0 0.25rem;
+  margin: 0 0.25rem;
 }
 
 .btn {
@@ -181,10 +192,12 @@ form {
   background-color: #00695c;
   color: white;
 }
+
 @media (min-width: 768px) {
   .main-header__nav {
     display: flex;
   }
+
   #side-menu-toggle {
     display: none;
   }
