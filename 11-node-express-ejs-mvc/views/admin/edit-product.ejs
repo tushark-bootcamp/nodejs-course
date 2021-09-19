@@ -7,13 +7,29 @@
     <main>
         <form
             class="product-form"
-            action="/admin/add-product"
+            <% if(editing) { %>  
+                action="/admin/edit-product"
+            <% }  else { %>
+                action="/admin/add-product"
+            <% } %>
             method="POST"
         >
+            <% if(editing) { %>    
+            <input
+                type="hidden"
+                <% if(editing) { %>  
+                    value="<%= product.id%>"
+                <% } %>
+                name="productId"
+            >
+            <% } %>
             <div class="form-control">
                 <label for="title">Title</label>
                 <input
                     type="text"
+                    <% if(editing) { %>  
+                        value="<%= product.title%>"
+                    <% } %>
                     name="title"
                     id="title"
                 >
@@ -22,6 +38,9 @@
                 <label for="imageUrl">Image URL</label>
                 <input
                     type="text"
+                    <% if(editing) { %>  
+                        value="<%= product.imageUrl%>"
+                    <% } %>
                     name="imageUrl"
                     id="imageUrl"
                 >
@@ -30,6 +49,9 @@
                 <label for="imageUrl">Price</label>
                 <input
                     type="number"
+                    <% if(editing) { %>  
+                        value="<%= product.price%>"
+                    <% } %>
                     name="price"
                     id="price"
                     step="0.01"
@@ -37,13 +59,17 @@
             </div>
             <div class="form-control">
                 <label for="description">Description</label>
-                <textarea name="description" id="description" cols="30" rows="5"></textarea>
+                <textarea 
+                    name="description" 
+                    id="description" 
+                    cols="30" 
+                    rows="5"><% if(editing) { %><%=product.description%><% } %></textarea>
             </div>
             <button
                 class="btn"
                 type="submit"
             >
-                Add Product
+                <% if(editing) { %>Update Product<% } else { %>Add Product<% } %>
             </button>
         </form>
     </main>

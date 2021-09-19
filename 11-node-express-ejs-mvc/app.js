@@ -8,6 +8,9 @@ const bodyParser = require('body-parser');
 const app = express();
 
 app.set('view engine', 'ejs');
+
+// This tells the express where to look for all the views => 
+// the path of which is provided as the first param in the res.render() method in controllers.
 app.set('views', 'views');
 
 const adminRoutes = require('./routes/admin');

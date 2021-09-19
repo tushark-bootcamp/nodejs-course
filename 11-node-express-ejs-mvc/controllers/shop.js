@@ -4,6 +4,9 @@ const Cart = require('../models/cart');
 exports.getProducts = (req, res, next) => {
     //console.log(products);
     Product.fetchAll((products) => {
+        // The first param of the res.render() method is the path to the view (.ejs file); 
+        // here its path to the product-list.ejs under the 'shop' folder of views, 
+        // Hence 'shop/product-list' without the .js
         res.render('shop/product-list', {
             prods: products,
             pageTitle: 'All Products',

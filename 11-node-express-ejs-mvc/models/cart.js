@@ -8,6 +8,7 @@ const prodFPath = path.join(
 );
 
 module.exports = class Cart {
+    
     static addProduct(id, productPrice) {
         // Fetch the previous cart
         //let cart = {products: [], totalPrice: 0};

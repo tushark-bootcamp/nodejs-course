@@ -15,6 +15,13 @@ router.get('/products', adminController.getProducts);
 // /admin/add-product => with POST
 router.post('/add-product', adminController.postAddProduct);
 
+router.post('/edit-product', adminController.postEditProduct);
+
+// /admin/edit-product => with GET
+router.get('/edit-product/:productId', adminController.getEditProduct);
+
+
+
 module.exports = router;
 //import syntax => 
 // 1. const adminRoutes = require('./routes/admin');
