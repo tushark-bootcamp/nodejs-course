@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 const prodFPath = path.join(path.dirname(process.mainModule.filename),
-        'data',
-        'products.json'
-    );
+    'data',
+    'products.json'
+);
 
 const getProductsFromFile = cb => {
     fs.readFile(prodFPath, (err, fileContent) => {
@@ -23,8 +23,8 @@ module.exports = class Product {
         this.description = description;
         this.price = price;
     }
-
     save() {
+        this.id = Math.random().toString();
         getProductsFromFile(products => {
             // the 'this' in line below refers to the Product class (which was instantiated using the constructor by the caller for this function) 
             // Its context is retained by the arrow function and hence 'this' refers to the class; 
@@ -39,4 +39,16 @@ module.exports = class Product {
     static fetchAll(cb) {
         getProductsFromFile(cb);
     }
-}
+
+    static findById(id, productCB) {
+        getProductsFromFile(products => {
+            const product = products.find(p => {
+                if (p.id === id) {
+                    return p;
+                }
+            });
+            //const product = products.find(p => p.id === id);
+            productCB(product);
+        });
+    }
+};

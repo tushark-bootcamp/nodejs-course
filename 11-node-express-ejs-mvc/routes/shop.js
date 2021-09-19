@@ -8,9 +8,12 @@ router.get('/', shopController.getIndex);
 
 router.get('/products', shopController.getProducts);
 
+// If there was any route such as '/products/delete', it will have to come before this route else it will not get executed 
+router.get('/products/:productId', shopController.getProduct);
+
 router.get('/cart', shopController.getCart);
 
-router.get('/product', shopController.getProduct);
+router.post('/cart', shopController.postCart);
 
 router.get('/checkout', shopController.getCheckout);
 
