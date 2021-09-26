@@ -20,9 +20,10 @@ router.post('/edit-product', adminController.postEditProduct);
 // /admin/edit-product => with GET
 router.get('/edit-product/:productId', adminController.getEditProduct);
 
-
+router.post('/delete-product', adminController.postDeleteProduct);
 
 module.exports = router;
+
 //import syntax => 
 // 1. const adminRoutes = require('./routes/admin');
 // 2. app.use('/admin', adminRoutes);
