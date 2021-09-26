@@ -67,7 +67,7 @@ exports.getCart = (req, res, next) => {
                 cartProds: []
             });
         }
-        
+
     });
 }
 

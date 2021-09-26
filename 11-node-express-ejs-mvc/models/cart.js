@@ -16,14 +16,14 @@ module.exports = class Cart {
         // Fetch the previous cart
         //let cart = {products: [], totalPrice: 0};
         fs.readFile(prodFPath, (err, fileContent) => {
-            let cart = {
-                products: [],
-                totalPrice: 0
-            };
-            if (!err) {
-                cart = JSON.parse(fileContent);
+            if (err) {
+                return;
             }
-
+            // let cart = {
+            //     products: [],
+            //     totalPrice: 0
+            // };
+            let cart = JSON.parse(fileContent);
             //Analyse the cart => find existing product
             const existingProdInd = cart.products.findIndex(prod => prod.id === id);
             const existingProduct = cart.products[existingProdInd];
@@ -61,9 +61,15 @@ module.exports = class Cart {
             //     products: [],
             //     totalPrice: 0
             // };
-            let cart = {...JSON.parse(fileContent)};
+            let cart = {
+                ...JSON.parse(fileContent)
+            };
             //Analyse the cart => find existing product
             const existingProductInd = cart.products.findIndex(prod => prod.id === id);
+            if (existingProductInd < 0) {
+                // This is a likely scenario when the admin removes the product from the list. 
+                return;
+            }
             const existingProduct = cart.products[existingProductInd];
             let deletedProduct;
             if (existingProduct && existingProduct.qty > 1) {
