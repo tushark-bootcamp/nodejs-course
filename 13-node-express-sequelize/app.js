@@ -16,7 +16,7 @@ app.set('views', 'views');
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const errorController = require('./controllers/error');
-const db = require('./util/database');
+const sequelize = require('./util/database');
 
 app.use(bodyParser.urlencoded({
     extended: false
@@ -31,4 +31,16 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-app.listen(3000);
+// This line syncs all your models 
+// Strangely without the force:true object, kept getting default value error for the id field in Product table.
+// Using force:true starts dropping table on very restart; therefore removed {force:true} from sync()
+// And from that point on, the default value error disappeared even after removing {force:true} from the sync() methid call.
+//sequelize.sync({force:true})
+sequelize.sync()
+    .then(result => {
+        //console.log(result);
+        app.listen(3000);
+    })
+    .catch(err => {
+        console.log(err);
+    });

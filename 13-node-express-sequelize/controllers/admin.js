@@ -19,13 +19,18 @@ exports.postAddProduct = (req, res, next) => {
     const imageUrl = req.body.imageUrl;
     const price = req.body.price;
     const description = req.body.description;
-    const product = new Product(null, title, imageUrl, description, price);
-    product
-        .save()
-        .then(() => {
+    Product.create({
+            title: title,
+            price: price,
+            imageUrl: imageUrl,
+            description: description
+        }).then(result => {
+            //console.log(result);
             res.redirect('/');
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            console.log(err)
+        });
 }
 
 exports.getEditProduct = (req, res, next) => {
@@ -36,19 +41,23 @@ exports.getEditProduct = (req, res, next) => {
     // productId should be exactly as defined in your route => :productId
     const prodId = req.params.productId;
     console.log('This is my edit products middleware!');
-    Product.findById(prodId, product => {
-        if (!product) {
-            return res.redirect('/');
-        }
-        console.log(product);
-        res.render('admin/edit-product', {
-            editing: editMode,
-            product: product,
-            // path is non-existent in navigation bar as we don't want to highlight any path on the navigation bar for edit product.
-            pageTitle: 'Edit Product',
-            path: '/admin/edit-product'
+    Product.findByPk(prodId)
+        .then(product => {
+            if (!product) {
+                return res.redirect('/');
+            }
+            console.log(product);
+            res.render('admin/edit-product', {
+                editing: editMode,
+                product: product,
+                // path is non-existent in navigation bar as we don't want to highlight any path on the navigation bar for edit product.
+                pageTitle: 'Edit Product',
+                path: '/admin/edit-product'
+            });
+        })
+        .catch(err => {
+            console.log(err);
         });
-    });
 }
 
 exports.postEditProduct = (req, res, next) => {
@@ -58,9 +67,23 @@ exports.postEditProduct = (req, res, next) => {
     const imageUrl = req.body.imageUrl;
     const price = req.body.price;
     const description = req.body.description;
-    const updatedProduct = new Product(prodId, title, imageUrl, description, price);
-    updatedProduct.save();
-    res.redirect('/admin/products');
+    Product.findByPk(prodId)
+        .then(product => {
+            product.title = title;
+            product.imageUrl = imageUrl;
+            product.price = price;
+            product.description = description;
+            //** BADD code would be */ 
+            // product.save().then(...).catch(err => console.log(err));
+            // instead, return and use .then
+            return product.save();
+        })
+        .then(result => {
+            res.redirect('/admin/products');
+        })
+        .catch(err =>
+            console.log(err)
+        );
 }
 
 exports.postDeleteProduct = (req, res, next) => {
@@ -73,11 +96,16 @@ exports.postDeleteProduct = (req, res, next) => {
 
 exports.getProducts = (req, res, next) => {
     //console.log(products);
-    Product.fetchAll((products) => {
-        res.render('admin/products', {
-            prods: products,
-            pageTitle: 'Admin Products',
-            path: '/admin/products'
+    Product.findAll()
+        .then(products => {
+            console.log(products);
+            res.render('admin/products', {
+                prods: products,
+                pageTitle: 'Admin Products',
+                path: '/admin/products'
+            });
+        })
+        .catch(err => {
+            console.log(err);
         });
-    });
 }
