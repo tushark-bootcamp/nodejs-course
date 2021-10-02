@@ -19,10 +19,13 @@ const errorController = require('./controllers/error');
 const sequelize = require('./util/database');
 const Product = require('./models/product');
 const User = require('./models/user');
-const UserType = require('./models/userType');
+const UserType = require('./models/user-type');
+const Cart = require('./models/cart');
+const CartItem = require('./models/cart-item');
 const {
     resolve
 } = require('path');
+const { hasOne } = require('./models/product');
 
 
 app.use(bodyParser.urlencoded({
@@ -65,6 +68,18 @@ User.belongsTo(UserType, {
 });
 UserType.hasOne(User);
 
+//Cart table has UserId
+Cart.belongsTo(User);
+User.hasOne(Cart);
+
+// CartItem table has CartId and ProductId
+Cart.belongsToMany(Product, {through: CartItem});
+
+// //CartItem table has CartId and ProductId
+Product.belongsToMany(Cart, {through: CartItem});
+
+// Fetches a user and creates one if it doesn't exist with specified uType
+// uType is either 'admin' or 'shopper'
 const fetchUser = (uType) => {
     const promise = new Promise((resolve, reject) => {
         UserType.findOne({
@@ -124,7 +139,7 @@ const fetchUser = (uType) => {
 
 //sequelize.sync({force:true})
 // sequelize.sync() is only called at the time of starting the server (@npm start) 
-sequelize.sync()
+sequelize.sync({force:true})
     .then(result => {
         return fetchUser('admin');
         //Promise.resolve(user);
