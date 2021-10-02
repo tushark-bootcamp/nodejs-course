@@ -19,12 +19,16 @@ exports.postAddProduct = (req, res, next) => {
     const imageUrl = req.body.imageUrl;
     const price = req.body.price;
     const description = req.body.description;
-    Product.create({
+    //** Magic Association methods: Observe how we have made use of the sequelize User object that we stored in */
+    // request obj from the app.js. Its relation with the Product object allowed us to call the createProduct method 
+    // on the User object instead of the Product object 
+    req.user.createProduct({
             title: title,
             price: price,
             imageUrl: imageUrl,
             description: description
-        }).then(result => {
+        })
+        .then(result => {
             //console.log(result);
             res.redirect('/admin/products');
         })

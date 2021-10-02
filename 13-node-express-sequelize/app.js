@@ -19,6 +19,11 @@ const errorController = require('./controllers/error');
 const sequelize = require('./util/database');
 const Product = require('./models/product');
 const User = require('./models/user');
+const UserType = require('./models/userType');
+const {
+    resolve
+} = require('path');
+
 
 app.use(bodyParser.urlencoded({
     extended: false
@@ -27,14 +32,86 @@ app.use(bodyParser.urlencoded({
 // This gives access to the css file under public folder
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Temporary middleware to set the User object in the request to mock authentication until it is properly implemented. 
+//** Thing to remember: The middleware is only ever called when the app receives a HTTP request; 
+//** NEVER called at the time of server restart */
+app.use((req, res, next) => {
+    fetchUser('admin')
+        .then(user => {
+            // The user stored in request is the sequelized object -- NOT just the javascript object with the field values.
+            req.user = user;
+            next();
+        })
+        .catch(err => console.log(err));
+});
+
 app.use('/admin', adminRoutes); // Export syntax (admin.js) => module.exports = router;
 //app.use('/admin', adminRoutes.routes); // Export syntax (admin.js) => exports.routes = router;
 app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-Product.belongsTo(User, {constraints: true, onDelete: 'CASCADE'});
+// Product table has the userId =>
+Product.belongsTo(User, {
+    constraints: true,
+    onDelete: 'CASCADE'
+});
 User.hasMany(Product);
+
+// User table has the userTypeId =>
+User.belongsTo(UserType, {
+    constraints: true,
+    onDelete: 'CASCADE'
+});
+UserType.hasOne(User);
+
+const fetchUser = (uType) => {
+    const promise = new Promise((resolve, reject) => {
+        UserType.findOne({
+                where: {
+                    userType: uType
+                }
+            })
+            .then(userType => {
+                if (!userType) {
+                    return UserType.create({
+                        userType: uType
+                    });
+                } else {
+                    return userType;
+                }
+            })
+            .then(userType => {
+                User.findOne({
+                        where: {
+                            userTypeId: userType.id
+                        }
+                    })
+                    .then(user => {
+                        if (user) {
+                            resolve(user);
+                        } else {
+                            user = User.create({
+                                name: 'User1',
+                                email: 'user1@email.com',
+                                userTypeId: userType.id
+                            });
+                            resolve(user);
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        reject(error);
+                    });
+            })
+            .catch(err => {
+                console.log(err);
+                reject(err);
+            });
+
+    });
+    return promise;
+}
 
 // sequelize.sync({force:true}) in the sync() method syncs all your models 
 // Use {force:true} object whenever you want to synchronise changes to your model with the database.
@@ -46,9 +123,13 @@ User.hasMany(Product);
 // TODO: Need a validation check at the time of commiting code changes to Git to ensure the line sequelize.sync({force:true}) is always commented 
 
 //sequelize.sync({force:true})
+// sequelize.sync() is only called at the time of starting the server (@npm start) 
 sequelize.sync()
     .then(result => {
-        //console.log(result);
+        return fetchUser('admin');
+        //Promise.resolve(user);
+    })
+    .then(() => {
         app.listen(3000);
     })
     .catch(err => {
@@ -59,3 +140,87 @@ sequelize.sync()
 // Was getting error something along the lines of .... default value error for the id field in Product table.
 // It was because of incorrect spelling of autoIncrement key in the Product model. 
 // Used {force:true} strategy successfully to resync the sequelize model with my MySQL DB after correcting the spelling.
+
+const fetchUserBADCODE = (uType) => {
+    const promise = new Promise((resolve, reject) => {
+        UserType.findOne({
+                where: {
+                    type: uType
+                }
+            })
+            .then(userType => {
+                if (userType) {
+                    User.findOne({
+                            where: {
+                                userTypeId: userType.id
+                            }
+                        })
+                        .then(user => {
+                            if (user) {
+                                resolve(user);
+                            } else {
+                                User.create({
+                                        name: 'User1',
+                                        email: 'user1@email.com',
+                                        userTypeId: userType.id
+                                    })
+                                    .then(user => {
+                                        resolve(user);
+                                    })
+                                    .catch(err => {
+                                        console.log(err);
+                                        reject(err);
+                                    })
+                            }
+                        })
+                        .catch(err => {
+                            console.log(err);
+                            reject(err);
+                        })
+                } else {
+                    UserType.create({
+                            type: uType
+                        })
+                        .then(userType => {
+                            User.findOne({
+                                    where: {
+                                        type: userType.id
+                                    }
+                                })
+                                .then(user => {
+                                    if (user) {
+                                        resolve(user);
+                                    } else {
+                                        User.create({
+                                                name: 'User1',
+                                                email: 'user1@email.com',
+                                                userTypeId: userType.id
+                                            })
+                                            .then(user => {
+                                                resolve(user);
+                                            })
+                                            .catch(err => {
+                                                console.log(err);
+                                                reject(err);
+                                            })
+                                    }
+                                })
+                                .catch(err => {
+                                    console.log(err);
+                                    reject(err);
+                                })
+                        })
+                        .catch(err => {
+                            console.log(err);
+                            reject(err);
+                        });
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                reject(err);
+            });
+
+    });
+    return promise;
+}
