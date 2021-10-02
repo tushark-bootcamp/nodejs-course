@@ -36,12 +36,14 @@ app.use(errorController.get404);
 Product.belongsTo(User, {constraints: true, onDelete: 'CASCADE'});
 User.hasMany(Product);
 
-// This line syncs all your models 
+// sequelize.sync({force:true}) in the sync() method syncs all your models 
 // Use {force:true} object whenever you want to synchronise changes to your model with the database.
 // Backup your DB before applying {force:true} 
-// Update your data upload scripts to re-adjust to new table relations of modifications to your existing schemas and then
+// Update your data upload scripts to re-adjust to new table relations or modifications to your existing schemas and then
 // Use {force:true} object in sync() which will restart the server (since we have used nodemon in npm start script).
 // Once the database schemas have been updated with your new sequelize model, reload the data carefully with your updated scripts
+// Then comment back the sequelize.sync({force:true}) as below
+// TODO: Need a validation check at the time of commiting code changes to Git to ensure the line sequelize.sync({force:true}) is always commented 
 
 //sequelize.sync({force:true})
 sequelize.sync()
