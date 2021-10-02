@@ -37,9 +37,12 @@ Product.belongsTo(User, {constraints: true, onDelete: 'CASCADE'});
 User.hasMany(Product);
 
 // This line syncs all your models 
-// Strangely without the force:true object, kept getting default value error for the id field in Product table.
-// Using force:true starts dropping table on very restart; therefore removed {force:true} from sync()
-// And from that point on, the default value error disappeared even after removing {force:true} from the sync() methid call.
+// Use {force:true} object whenever you want to synchronise changes to your model with the database.
+// Backup your DB before applying {force:true} 
+// Update your data upload scripts to re-adjust to new table relations of modifications to your existing schemas and then
+// Use {force:true} object in sync() which will restart the server (since we have used nodemon in npm start script).
+// Once the database schemas have been updated with your new sequelize model, reload the data carefully with your updated scripts
+
 //sequelize.sync({force:true})
 sequelize.sync()
     .then(result => {
@@ -49,3 +52,8 @@ sequelize.sync()
     .catch(err => {
         console.log(err);
     });
+
+// ** Additional Notes on sequelize.sync({force:true})
+// Was getting error something along the lines of .... default value error for the id field in Product table.
+// It was because of incorrect spelling of autoIncrement key in the Product model. 
+// Used {force:true} strategy successfully to resync the sequelize model with my MySQL DB after correcting the spelling.
